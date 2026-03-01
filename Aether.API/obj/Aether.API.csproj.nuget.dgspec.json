@@ -1,0 +1,308 @@
+{
+  "format": 1,
+  "restore": {
+    "/Users/pernalonga/Git-Repo/aether/backend/Aether.API/Aether.API.csproj": {}
+  },
+  "projects": {
+    "/Users/pernalonga/Git-Repo/aether/backend/Aether.API/Aether.API.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/pernalonga/Git-Repo/aether/backend/Aether.API/Aether.API.csproj",
+        "projectName": "Aether.API",
+        "projectPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.API/Aether.API.csproj",
+        "packagesPath": "/Users/pernalonga/.nuget/packages/",
+        "outputPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.API/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/pernalonga/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/Aether.Application.csproj": {
+                "projectPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/Aether.Application.csproj"
+              },
+              "/Users/pernalonga/Git-Repo/aether/backend/Aether.Domain/Aether.Domain.csproj": {
+                "projectPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Domain/Aether.Domain.csproj"
+              },
+              "/Users/pernalonga/Git-Repo/aether/backend/Aether.Infrastructure/Aether.Infrastructure.csproj": {
+                "projectPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Infrastructure/Aether.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.13, )"
+            },
+            "Microsoft.AspNetCore.OpenApi": {
+              "target": "Package",
+              "version": "[8.0.13, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.13, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[8.0.13, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.402/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/Aether.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/Aether.Application.csproj",
+        "projectName": "Aether.Application",
+        "projectPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/Aether.Application.csproj",
+        "packagesPath": "/Users/pernalonga/.nuget/packages/",
+        "outputPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/pernalonga/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/Users/pernalonga/Git-Repo/aether/backend/Aether.Domain/Aether.Domain.csproj": {
+                "projectPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Domain/Aether.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.402/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/pernalonga/Git-Repo/aether/backend/Aether.Domain/Aether.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Domain/Aether.Domain.csproj",
+        "projectName": "Aether.Domain",
+        "projectPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Domain/Aether.Domain.csproj",
+        "packagesPath": "/Users/pernalonga/.nuget/packages/",
+        "outputPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Domain/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/pernalonga/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.402/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "/Users/pernalonga/Git-Repo/aether/backend/Aether.Infrastructure/Aether.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Infrastructure/Aether.Infrastructure.csproj",
+        "projectName": "Aether.Infrastructure",
+        "projectPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Infrastructure/Aether.Infrastructure.csproj",
+        "packagesPath": "/Users/pernalonga/.nuget/packages/",
+        "outputPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Infrastructure/obj/",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "/Users/pernalonga/.nuget/NuGet/NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "/usr/local/share/dotnet/library-packs": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/Aether.Application.csproj": {
+                "projectPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/Aether.Application.csproj"
+              },
+              "/Users/pernalonga/Git-Repo/aether/backend/Aether.Domain/Aether.Domain.csproj": {
+                "projectPath": "/Users/pernalonga/Git-Repo/aether/backend/Aether.Domain/Aether.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        }
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[8.0.13, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.13, )"
+            },
+            "Microsoft.EntityFrameworkCore.Sqlite": {
+              "target": "Package",
+              "version": "[8.0.13, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/8.0.402/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

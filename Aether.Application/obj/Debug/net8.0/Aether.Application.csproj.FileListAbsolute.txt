@@ -1,0 +1,16 @@
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/bin/Debug/net8.0/Aether.Application.deps.json
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/bin/Debug/net8.0/Aether.Application.dll
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/bin/Debug/net8.0/Aether.Application.pdb
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/bin/Debug/net8.0/Aether.Domain.dll
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/bin/Debug/net8.0/Aether.Domain.pdb
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/obj/Debug/net8.0/Aether.Application.csproj.AssemblyReference.cache
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/obj/Debug/net8.0/Aether.Application.GeneratedMSBuildEditorConfig.editorconfig
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/obj/Debug/net8.0/Aether.Application.AssemblyInfoInputs.cache
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/obj/Debug/net8.0/Aether.Application.AssemblyInfo.cs
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/obj/Debug/net8.0/Aether.Application.csproj.CoreCompileInputs.cache
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/obj/Debug/net8.0/Aether.Application.sourcelink.json
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/obj/Debug/net8.0/Aether.A.FDD47752.Up2Date
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/obj/Debug/net8.0/Aether.Application.dll
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/obj/Debug/net8.0/refint/Aether.Application.dll
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/obj/Debug/net8.0/Aether.Application.pdb
+/Users/pernalonga/Git-Repo/aether/backend/Aether.Application/obj/Debug/net8.0/ref/Aether.Application.dll
