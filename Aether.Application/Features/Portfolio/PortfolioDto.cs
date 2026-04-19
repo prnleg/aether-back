@@ -1,4 +1,4 @@
-namespace Aether.Application.DTOs;
+namespace Aether.Application.Features.Portfolio;
 
 public class PortfolioDto
 {

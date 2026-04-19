@@ -1,14 +1,13 @@
-using Aether.Application.DTOs;
 using FluentValidation;
 
-namespace Aether.Application.Validators;
+namespace Aether.Application.Features.Portfolio.Validators;
 
-public class AddSteamSkinRequestValidator : AbstractValidator<AddSteamSkinRequest>
+public class AddPhysicalAssetRequestValidator : AbstractValidator<AddPhysicalAssetRequest>
 {
-    public AddSteamSkinRequestValidator()
+    public AddPhysicalAssetRequestValidator()
     {
         RuleFor(x => x.Name).NotEmpty().WithMessage("Asset name is required.");
-        RuleFor(x => x.MarketHashName).NotEmpty().WithMessage("Market hash name is required.");
+        RuleFor(x => x.Category).NotEmpty().WithMessage("Category is required.");
         RuleFor(x => x.AcquisitionPrice).GreaterThan(0).WithMessage("Acquisition price must be greater than 0.");
         RuleFor(x => x.Currency).NotEmpty().WithMessage("Currency is required.");
     }

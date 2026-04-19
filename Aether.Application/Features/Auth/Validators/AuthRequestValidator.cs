@@ -1,7 +1,6 @@
-using Aether.Application.DTOs;
 using FluentValidation;
 
-namespace Aether.Application.Validators;
+namespace Aether.Application.Features.Auth.Validators;
 
 public class AuthRequestValidator : AbstractValidator<AuthRequest>
 {

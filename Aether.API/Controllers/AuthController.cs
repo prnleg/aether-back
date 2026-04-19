@@ -1,6 +1,6 @@
-using Aether.Application.DTOs;
+using Aether.Application.Features.Auth;
+using Aether.Application.Features.Portfolio;
 using Aether.Application.Services;
-using Aether.Application.Validators;
 using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -15,15 +15,18 @@ public class AuthController : ControllerBase
 {
     private readonly UserManager<IdentityUser<Guid>> _userManager;
     private readonly IJwtService _jwtService;
+    private readonly IPortfolioService _portfolioService;
     private readonly IValidator<AuthRequest> _validator;
 
     public AuthController(
         UserManager<IdentityUser<Guid>> userManager,
         IJwtService jwtService,
+        IPortfolioService portfolioService,
         IValidator<AuthRequest> validator)
     {
         _userManager = userManager;
         _jwtService = jwtService;
+        _portfolioService = portfolioService;
         _validator = validator;
     }
 
@@ -45,8 +48,16 @@ public class AuthController : ControllerBase
             return BadRequest(new { error = "RegistrationFailed", message = errors });
         }
 
+        var portfolioResult = await _portfolioService.GetOrCreateDefaultPortfolioIdAsync(user.Id);
+
         var token = _jwtService.GenerateToken(user.Id, user.Email!);
-        return Ok(new AuthResponse { Token = token, UserId = user.Id, Email = user.Email! });
+        return Ok(new AuthResponse
+        {
+            Token = token,
+            UserId = user.Id,
+            Email = user.Email!,
+            PortfolioId = portfolioResult.Value
+        });
     }
 
     [HttpPost("login")]
@@ -58,8 +69,16 @@ public class AuthController : ControllerBase
         if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
             return Unauthorized(new { error = "Unauthorized", message = "Invalid email or password." });
 
+        var portfolioResult = await _portfolioService.GetOrCreateDefaultPortfolioIdAsync(user.Id);
+
         var token = _jwtService.GenerateToken(user.Id, user.Email!);
-        return Ok(new AuthResponse { Token = token, UserId = user.Id, Email = user.Email! });
+        return Ok(new AuthResponse
+        {
+            Token = token,
+            UserId = user.Id,
+            Email = user.Email!,
+            PortfolioId = portfolioResult.Value
+        });
     }
 
     [Authorize]
@@ -69,6 +88,6 @@ public class AuthController : ControllerBase
         var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
         var user = await _userManager.FindByIdAsync(userId.ToString());
         if (user == null) return NotFound();
-        return Ok(new UserDto { Id = user.Id, Email = user.Email! });
+        return Ok(new UserDto { Id = user.Id, Name = user.UserName!, Email = user.Email! });
     }
 }

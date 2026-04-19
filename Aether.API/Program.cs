@@ -1,8 +1,10 @@
 using System.Text;
 using Aether.API.Middleware;
+using Aether.Application.Features.Auth.Validators;
+using Aether.Application.Features.Portfolio;
 using Aether.Application.Services;
-using Aether.Application.Validators;
 using Aether.Domain.Interfaces;
+using Aether.Infrastructure.BackgroundServices;
 using Aether.Infrastructure.Persistence;
 using Aether.Infrastructure.Repositories;
 using Aether.Infrastructure.Services;
@@ -17,6 +19,13 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+// CORS — allow Flutter (mobile + web dev)
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
 
 // Swagger with JWT bearer support
 builder.Services.AddSwaggerGen(c =>
@@ -85,6 +94,9 @@ builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
 
+// Background services
+builder.Services.AddHostedService<OutboxWorker>();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -94,6 +106,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseCors();
 app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();

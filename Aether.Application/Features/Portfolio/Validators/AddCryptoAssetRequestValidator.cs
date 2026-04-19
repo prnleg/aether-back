@@ -1,7 +1,6 @@
-using Aether.Application.DTOs;
 using FluentValidation;
 
-namespace Aether.Application.Validators;
+namespace Aether.Application.Features.Portfolio.Validators;
 
 public class AddCryptoAssetRequestValidator : AbstractValidator<AddCryptoAssetRequest>
 {

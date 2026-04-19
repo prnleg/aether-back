@@ -1,7 +1,8 @@
-using Aether.Application.DTOs;
-using Aether.Application.Services;
+using Aether.Application.Features.Portfolio;
+using Aether.Domain.Common;
 using Aether.Domain.Entities;
 using Aether.Domain.Interfaces;
+using Aether.Domain.Specifications;
 using Aether.Domain.ValueObjects;
 
 namespace Aether.Infrastructure.Services;
@@ -15,67 +16,107 @@ public class PortfolioService : IPortfolioService
         _repository = repository;
     }
 
-    public async Task<IEnumerable<PortfolioDto>> GetUserPortfoliosAsync(Guid userId)
+    public async Task<Result<IEnumerable<PortfolioDto>>> GetUserPortfoliosAsync(Guid userId)
     {
-        var portfolios = await _repository.GetAllByUserIdAsync(userId);
-        return portfolios.Select(MapToDto);
+        var portfolios = (await _repository.ListAsync(new PortfoliosByUserIdSpec(userId))).ToList();
+
+        if (portfolios.Count == 0)
+        {
+            var defaultPortfolio = new Portfolio("My Portfolio", userId);
+            await _repository.AddAsync(defaultPortfolio);
+            portfolios.Add(defaultPortfolio);
+        }
+
+        return Result.Success<IEnumerable<PortfolioDto>>(portfolios.Select(MapToDto));
     }
 
-    public async Task<PortfolioDto?> GetPortfolioByIdAsync(Guid id, Guid userId)
+    public async Task<Result<Guid>> GetOrCreateDefaultPortfolioIdAsync(Guid userId)
     {
-        var portfolio = await _repository.GetByIdAsync(id);
-        if (portfolio == null || portfolio.UserId != userId) return null;
-        return MapToDto(portfolio);
+        var portfolios = (await _repository.ListAsync(new PortfoliosByUserIdSpec(userId))).ToList();
+        if (portfolios.Count > 0) return Result.Success(portfolios[0].Id);
+
+        var portfolio = new Portfolio("My Portfolio", userId);
+        await _repository.AddAsync(portfolio);
+        return Result.Success(portfolio.Id);
     }
 
-    public async Task<PortfolioDto> CreatePortfolioAsync(CreatePortfolioRequest request, Guid userId)
+    public async Task<Result<PortfolioDto>> GetPortfolioByIdAsync(Guid id, Guid userId)
+    {
+        var portfolio = await _repository.FindAsync(new PortfolioByIdAndUserIdSpec(id, userId));
+        if (portfolio == null)
+            return Result.Failure<PortfolioDto>(Error.NotFound($"Portfolio {id} not found."));
+
+        return Result.Success(MapToDto(portfolio));
+    }
+
+    public async Task<Result<PortfolioDto>> CreatePortfolioAsync(CreatePortfolioRequest request, Guid userId)
     {
         var portfolio = new Portfolio(request.Name, userId);
         await _repository.AddAsync(portfolio);
-        return MapToDto(portfolio);
+        return Result.Success(MapToDto(portfolio));
     }
 
-    public async Task<AssetDto> AddCryptoAssetAsync(Guid portfolioId, AddCryptoAssetRequest request, Guid userId)
+    public async Task<Result<AssetDto>> AddCryptoAssetAsync(Guid portfolioId, AddCryptoAssetRequest request, Guid userId)
     {
-        var portfolio = await GetOwnedPortfolioAsync(portfolioId, userId);
-        var asset = new CryptoAsset(request.Name, DateTime.UtcNow, new Money(request.AcquisitionPrice, request.Currency), request.Symbol, request.Quantity);
-        portfolio.AddAsset(asset);
-        await _repository.UpdateAsync(portfolio);
-        return MapAssetToDto(asset, "Crypto");
+        var result = await GetOwnedPortfolioAsync(portfolioId, userId);
+        if (result.IsFailure) return Result.Failure<AssetDto>(result.Error);
+
+        var asset = new CryptoAsset(request.Name, DateTime.UtcNow,
+            new Money(request.AcquisitionPrice, request.Currency),
+            request.Symbol, request.Quantity);
+
+        result.Value.AddAsset(asset);
+        await _repository.UpdateAsync(result.Value);
+        return Result.Success(MapAssetToDto(asset, "Crypto"));
     }
 
-    public async Task<AssetDto> AddSteamSkinAsync(Guid portfolioId, AddSteamSkinRequest request, Guid userId)
+    public async Task<Result<AssetDto>> AddSteamSkinAsync(Guid portfolioId, AddSteamSkinRequest request, Guid userId)
     {
-        var portfolio = await GetOwnedPortfolioAsync(portfolioId, userId);
-        var asset = new SteamSkinAsset(request.Name, DateTime.UtcNow, new Money(request.AcquisitionPrice, request.Currency), request.MarketHashName);
-        portfolio.AddAsset(asset);
-        await _repository.UpdateAsync(portfolio);
-        return MapAssetToDto(asset, "SteamSkin");
+        var result = await GetOwnedPortfolioAsync(portfolioId, userId);
+        if (result.IsFailure) return Result.Failure<AssetDto>(result.Error);
+
+        var asset = new SteamSkinAsset(request.Name, DateTime.UtcNow,
+            new Money(request.AcquisitionPrice, request.Currency),
+            request.MarketHashName);
+
+        result.Value.AddAsset(asset);
+        await _repository.UpdateAsync(result.Value);
+        return Result.Success(MapAssetToDto(asset, "SteamSkin"));
     }
 
-    public async Task<AssetDto> AddPhysicalAssetAsync(Guid portfolioId, AddPhysicalAssetRequest request, Guid userId)
+    public async Task<Result<AssetDto>> AddPhysicalAssetAsync(Guid portfolioId, AddPhysicalAssetRequest request, Guid userId)
     {
-        var portfolio = await GetOwnedPortfolioAsync(portfolioId, userId);
-        var asset = new PhysicalAsset(request.Name, DateTime.UtcNow, new Money(request.AcquisitionPrice, request.Currency), request.Category, request.Brand, request.Condition);
-        portfolio.AddAsset(asset);
-        await _repository.UpdateAsync(portfolio);
-        return MapAssetToDto(asset, "Physical");
+        var result = await GetOwnedPortfolioAsync(portfolioId, userId);
+        if (result.IsFailure) return Result.Failure<AssetDto>(result.Error);
+
+        var asset = new PhysicalAsset(request.Name, DateTime.UtcNow,
+            new Money(request.AcquisitionPrice, request.Currency),
+            request.Category, request.Brand, request.Condition);
+
+        result.Value.AddAsset(asset);
+        await _repository.UpdateAsync(result.Value);
+        return Result.Success(MapAssetToDto(asset, "Physical"));
     }
 
-    public async Task RemoveAssetAsync(Guid portfolioId, Guid assetId, Guid userId)
+    public async Task<Result> RemoveAssetAsync(Guid portfolioId, Guid assetId, Guid userId)
     {
-        var portfolio = await GetOwnedPortfolioAsync(portfolioId, userId);
-        var removed = portfolio.RemoveAsset(assetId);
-        if (!removed) throw new KeyNotFoundException($"Asset {assetId} not found in portfolio.");
-        await _repository.UpdateAsync(portfolio);
+        var result = await GetOwnedPortfolioAsync(portfolioId, userId);
+        if (result.IsFailure) return Result.Failure(result.Error);
+
+        if (!result.Value.RemoveAsset(assetId))
+            return Result.Failure(Error.NotFound($"Asset {assetId} not found in portfolio."));
+
+        await _repository.UpdateAsync(result.Value);
+        return Result.Success();
     }
 
-    private async Task<Portfolio> GetOwnedPortfolioAsync(Guid portfolioId, Guid userId)
+    private async Task<Result<Portfolio>> GetOwnedPortfolioAsync(Guid portfolioId, Guid userId)
     {
-        var portfolio = await _repository.GetByIdAsync(portfolioId);
-        if (portfolio == null || portfolio.UserId != userId)
-            throw new KeyNotFoundException($"Portfolio {portfolioId} not found.");
-        return portfolio;
+        var portfolio = await _repository.FindAsync(new PortfolioByIdAndUserIdSpec(portfolioId, userId));
+        if (portfolio == null)
+            return Result.Failure<Portfolio>(Error.NotFound($"Portfolio {portfolioId} not found."));
+
+        return Result.Success(portfolio);
     }
 
     private static PortfolioDto MapToDto(Portfolio portfolio)

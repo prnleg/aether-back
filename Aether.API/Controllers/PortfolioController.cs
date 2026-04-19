@@ -1,5 +1,5 @@
-using Aether.Application.DTOs;
-using Aether.Application.Services;
+using Aether.API.Common;
+using Aether.Application.Features.Portfolio;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -22,52 +22,52 @@ public class PortfolioController : ControllerBase
         Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<PortfolioDto>>> GetPortfolios()
+    public async Task<IActionResult> GetPortfolios()
     {
-        var portfolios = await _portfolioService.GetUserPortfoliosAsync(CurrentUserId);
-        return Ok(portfolios);
+        var result = await _portfolioService.GetUserPortfoliosAsync(CurrentUserId);
+        return result.ToActionResult(this);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<PortfolioDto>> GetPortfolio(Guid id)
+    public async Task<IActionResult> GetPortfolio(Guid id)
     {
-        var portfolio = await _portfolioService.GetPortfolioByIdAsync(id, CurrentUserId);
-        if (portfolio == null) return NotFound();
-        return Ok(portfolio);
+        var result = await _portfolioService.GetPortfolioByIdAsync(id, CurrentUserId);
+        return result.ToActionResult(this);
     }
 
     [HttpPost]
-    public async Task<ActionResult<PortfolioDto>> CreatePortfolio([FromBody] CreatePortfolioRequest request)
+    public async Task<IActionResult> CreatePortfolio([FromBody] CreatePortfolioRequest request)
     {
-        var portfolio = await _portfolioService.CreatePortfolioAsync(request, CurrentUserId);
-        return CreatedAtAction(nameof(GetPortfolio), new { id = portfolio.Id }, portfolio);
+        var result = await _portfolioService.CreatePortfolioAsync(request, CurrentUserId);
+        if (result.IsFailure) return result.ToActionResult(this);
+        return CreatedAtAction(nameof(GetPortfolio), new { id = result.Value.Id }, result.Value);
     }
 
     [HttpPost("{id}/assets/crypto")]
-    public async Task<ActionResult<AssetDto>> AddCryptoAsset(Guid id, [FromBody] AddCryptoAssetRequest request)
+    public async Task<IActionResult> AddCryptoAsset(Guid id, [FromBody] AddCryptoAssetRequest request)
     {
-        var asset = await _portfolioService.AddCryptoAssetAsync(id, request, CurrentUserId);
-        return Ok(asset);
+        var result = await _portfolioService.AddCryptoAssetAsync(id, request, CurrentUserId);
+        return result.ToActionResult(this);
     }
 
     [HttpPost("{id}/assets/steam")]
-    public async Task<ActionResult<AssetDto>> AddSteamSkin(Guid id, [FromBody] AddSteamSkinRequest request)
+    public async Task<IActionResult> AddSteamSkin(Guid id, [FromBody] AddSteamSkinRequest request)
     {
-        var asset = await _portfolioService.AddSteamSkinAsync(id, request, CurrentUserId);
-        return Ok(asset);
+        var result = await _portfolioService.AddSteamSkinAsync(id, request, CurrentUserId);
+        return result.ToActionResult(this);
     }
 
     [HttpPost("{id}/assets/physical")]
-    public async Task<ActionResult<AssetDto>> AddPhysicalAsset(Guid id, [FromBody] AddPhysicalAssetRequest request)
+    public async Task<IActionResult> AddPhysicalAsset(Guid id, [FromBody] AddPhysicalAssetRequest request)
     {
-        var asset = await _portfolioService.AddPhysicalAssetAsync(id, request, CurrentUserId);
-        return Ok(asset);
+        var result = await _portfolioService.AddPhysicalAssetAsync(id, request, CurrentUserId);
+        return result.ToActionResult(this);
     }
 
     [HttpDelete("{id}/assets/{assetId}")]
     public async Task<IActionResult> RemoveAsset(Guid id, Guid assetId)
     {
-        await _portfolioService.RemoveAssetAsync(id, assetId, CurrentUserId);
-        return NoContent();
+        var result = await _portfolioService.RemoveAssetAsync(id, assetId, CurrentUserId);
+        return result.ToActionResult(this);
     }
 }
