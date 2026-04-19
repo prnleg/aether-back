@@ -12,6 +12,7 @@ public class AetherDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRol
     public DbSet<Asset> Assets { get; set; } = null!;
     public DbSet<SteamSkinAsset> SteamSkinAssets { get; set; } = null!;
     public DbSet<CryptoAsset> CryptoAssets { get; set; } = null!;
+    public DbSet<PhysicalAsset> PhysicalAssets { get; set; } = null!;
 
     public AetherDbContext(DbContextOptions<AetherDbContext> options) : base(options) { }
 
@@ -51,7 +52,8 @@ public class AetherDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRol
 
             entity.HasDiscriminator<string>("AssetType")
                 .HasValue<SteamSkinAsset>("SteamSkin")
-                .HasValue<CryptoAsset>("Crypto");
+                .HasValue<CryptoAsset>("Crypto")
+                .HasValue<PhysicalAsset>("Physical");
         });
 
         modelBuilder.Entity<SteamSkinAsset>(entity =>
@@ -64,6 +66,13 @@ public class AetherDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRol
         {
             entity.Property(e => e.Symbol).HasMaxLength(50);
             entity.Property(e => e.Quantity).HasPrecision(30, 18);
+        });
+
+        modelBuilder.Entity<PhysicalAsset>(entity =>
+        {
+            entity.Property(e => e.Category).HasMaxLength(100);
+            entity.Property(e => e.Brand).HasMaxLength(100);
+            entity.Property(e => e.Condition).HasMaxLength(50);
         });
     }
 }

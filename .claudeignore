@@ -1,0 +1,36 @@
+# --- Sensitive Information ---
+# Never let the AI see your keys or secrets
+.env
+secrets.json
+*.pem
+*.key
+certs/
+credentials.json
+
+# --- Build & Dependency Folders ---
+# Claude doesn't need to read compiled code or every library
+bin/
+obj/
+node_modules/
+packages/
+
+# --- Large/Non-Text Files ---
+# To save context space and prevent errors
+*.exe
+*.dll
+*.pdb
+*.zip
+*.7z
+*.png
+*.jpg
+*.pdf
+
+# --- Version Control & Internal Logs ---
+.git/
+.svn/
+*.log
+
+# --- Specific Private Docs ---
+# If you have internal specs or legal docs you don't want processed
+internal_docs/
+PROPRIETARY_LICENSE.md

@@ -1,0 +1,62 @@
+# --- Build Artifacts ---
+[Bb]in/
+[Oo]bj/
+out/
+
+# --- User-specific files ---
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+
+# --- IDE ---
+.vs/
+.idea/
+.vscode/
+
+# --- NuGet ---
+packages/
+*.nuget.props
+*.nuget.targets
+
+# --- .NET / EF Core ---
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# --- SQLite databases ---
+*.db
+*.db-shm
+*.db-wal
+
+# --- Secrets and Environment ---
+appsettings.Development.json
+appsettings.local.json
+appsettings.*.json
+!appsettings.json
+.env
+*.env
+*.pem
+*.pfx
+*.key
+secrets.json
+**/secrets.json
+
+# --- Docker ---
+.dockerignore
+
+# --- Test results ---
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.trx
+*.coverage
+*.coveragexml
+
+# --- OS generated ---
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db

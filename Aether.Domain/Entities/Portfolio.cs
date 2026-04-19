@@ -23,6 +23,14 @@ public class Portfolio
         _assets.Add(asset);
     }
 
+    public bool RemoveAsset(Guid assetId)
+    {
+        var asset = _assets.FirstOrDefault(a => a.Id == assetId);
+        if (asset == null) return false;
+        _assets.Remove(asset);
+        return true;
+    }
+
     public Money CalculateTotalValue(string currency)
     {
         decimal total = _assets

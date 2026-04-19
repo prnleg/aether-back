@@ -1,51 +1,73 @@
-using Aether.Domain.Entities;
-using Aether.Domain.ValueObjects;
-using Aether.Infrastructure.Persistence;
+using Aether.Application.DTOs;
+using Aether.Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Aether.API.Controllers;
 
 [ApiController]
-[Route("api/[controller]")]
+[Route("api/portfolio")]
+[Authorize]
 public class PortfolioController : ControllerBase
 {
-    private readonly AetherDbContext _context;
+    private readonly IPortfolioService _portfolioService;
 
-    public PortfolioController(AetherDbContext context)
+    public PortfolioController(IPortfolioService portfolioService)
     {
-        _context = context;
+        _portfolioService = portfolioService;
     }
 
+    private Guid CurrentUserId =>
+        Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Portfolio>>> GetPortfolios()
+    public async Task<ActionResult<IEnumerable<PortfolioDto>>> GetPortfolios()
     {
-        return await _context.Portfolios.Include(p => p.Assets).ToListAsync();
+        var portfolios = await _portfolioService.GetUserPortfoliosAsync(CurrentUserId);
+        return Ok(portfolios);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<PortfolioDto>> GetPortfolio(Guid id)
+    {
+        var portfolio = await _portfolioService.GetPortfolioByIdAsync(id, CurrentUserId);
+        if (portfolio == null) return NotFound();
+        return Ok(portfolio);
     }
 
     [HttpPost]
-    public async Task<ActionResult<Portfolio>> CreatePortfolio(string name)
+    public async Task<ActionResult<PortfolioDto>> CreatePortfolio([FromBody] CreatePortfolioRequest request)
     {
-        // For now, using a hardcoded user ID until we have real auth
-        var userId = Guid.NewGuid(); 
-        var portfolio = new Portfolio(name, userId);
-        
-        _context.Portfolios.Add(portfolio);
-        await _context.SaveChangesAsync();
+        var portfolio = await _portfolioService.CreatePortfolioAsync(request, CurrentUserId);
+        return CreatedAtAction(nameof(GetPortfolio), new { id = portfolio.Id }, portfolio);
+    }
 
-        return CreatedAtAction(nameof(GetPortfolios), new { id = portfolio.Id }, portfolio);
+    [HttpPost("{id}/assets/crypto")]
+    public async Task<ActionResult<AssetDto>> AddCryptoAsset(Guid id, [FromBody] AddCryptoAssetRequest request)
+    {
+        var asset = await _portfolioService.AddCryptoAssetAsync(id, request, CurrentUserId);
+        return Ok(asset);
     }
 
     [HttpPost("{id}/assets/steam")]
-    public async Task<IActionResult> AddSteamSkin(Guid id, string name, decimal price, string hashName)
+    public async Task<ActionResult<AssetDto>> AddSteamSkin(Guid id, [FromBody] AddSteamSkinRequest request)
     {
-        var portfolio = await _context.Portfolios.FindAsync(id);
-        if (portfolio == null) return NotFound();
+        var asset = await _portfolioService.AddSteamSkinAsync(id, request, CurrentUserId);
+        return Ok(asset);
+    }
 
-        var asset = new SteamSkinAsset(name, DateTime.UtcNow, new Money(price, "USD"), hashName);
-        portfolio.AddAsset(asset);
-        
-        await _context.SaveChangesAsync();
-        return Ok(portfolio);
+    [HttpPost("{id}/assets/physical")]
+    public async Task<ActionResult<AssetDto>> AddPhysicalAsset(Guid id, [FromBody] AddPhysicalAssetRequest request)
+    {
+        var asset = await _portfolioService.AddPhysicalAssetAsync(id, request, CurrentUserId);
+        return Ok(asset);
+    }
+
+    [HttpDelete("{id}/assets/{assetId}")]
+    public async Task<IActionResult> RemoveAsset(Guid id, Guid assetId)
+    {
+        await _portfolioService.RemoveAssetAsync(id, assetId, CurrentUserId);
+        return NoContent();
     }
 }
