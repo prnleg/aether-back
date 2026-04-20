@@ -9,9 +9,10 @@ public class SteamSkinAsset : Asset
 
     private SteamSkinAsset() { }
 
-    public SteamSkinAsset(string name, DateTime acquisitionDate, Money acquisitionPrice, string marketHashName) 
+    public SteamSkinAsset(string name, DateTime acquisitionDate, Money acquisitionPrice, string marketHashName, string appId = "730")
         : base(name, acquisitionDate, acquisitionPrice)
     {
         MarketHashName = marketHashName;
+        AppId = appId;
     }
 }

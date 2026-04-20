@@ -1,6 +1,7 @@
 using System.Text;
 using Aether.API.Middleware;
 using Aether.Application.Features.Auth.Validators;
+using Aether.Application.Features.Discovery;
 using Aether.Application.Features.Portfolio;
 using Aether.Application.Services;
 using Aether.Domain.Interfaces;
@@ -93,9 +94,21 @@ builder.Services.AddValidatorsFromAssemblyContaining<AuthRequestValidator>();
 builder.Services.AddScoped<IPortfolioRepository, PortfolioRepository>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IPortfolioService, PortfolioService>();
+builder.Services.AddScoped<IDiscoveryRepository, DiscoveryRepository>();
+builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+builder.Services.AddScoped<IDiscoveryService, DiscoveryService>();
+builder.Services.AddSingleton<ISteamInventoryProvider, SteamInventoryProvider>();
+
+// HttpClient for Steam API
+builder.Services.AddHttpClient("Steam", client =>
+{
+    client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (compatible; AetherBot/1.0)");
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 
 // Background services
 builder.Services.AddHostedService<OutboxWorker>();
+builder.Services.AddHostedService<PriceEnrichmentWorker>();
 
 var app = builder.Build();
 

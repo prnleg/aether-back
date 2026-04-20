@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Aether.Domain.Common;
 using Aether.Domain.Entities;
+using Aether.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,8 @@ public class AetherDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRol
     public DbSet<CryptoAsset> CryptoAssets { get; set; } = null!;
     public DbSet<PhysicalAsset> PhysicalAssets { get; set; } = null!;
     public DbSet<OutboxMessage> OutboxMessages { get; set; } = null!;
+    public DbSet<DiscoveryItem> DiscoveryItems { get; set; } = null!;
+    public DbSet<UserProfile> UserProfiles { get; set; } = null!;
 
     public AetherDbContext(DbContextOptions<AetherDbContext> options) : base(options) { }
 
@@ -104,6 +107,32 @@ public class AetherDbContext : IdentityDbContext<IdentityUser<Guid>, IdentityRol
             entity.Property(e => e.Type).IsRequired().HasMaxLength(500);
             entity.Property(e => e.Payload).IsRequired();
             entity.HasIndex(e => e.ProcessedAt);
+        });
+
+        modelBuilder.Entity<UserProfile>(entity =>
+        {
+            entity.HasKey(e => e.UserId);
+            entity.Property(e => e.SteamId).HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<DiscoveryItem>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.ExternalId).IsRequired().HasMaxLength(100);
+            entity.Property(e => e.MarketHashName).IsRequired().HasMaxLength(500);
+            entity.Property(e => e.AppId).IsRequired().HasMaxLength(50);
+            entity.Property(e => e.IconUrl).HasMaxLength(1000);
+            entity.Property(e => e.Status)
+                  .HasConversion<string>()
+                  .HasMaxLength(20);
+
+            entity.OwnsOne(e => e.MarketPrice, price =>
+            {
+                price.Property(p => p.Amount).HasColumnName("MarketPriceAmount").HasPrecision(18, 2);
+                price.Property(p => p.Currency).HasColumnName("MarketPriceCurrency").HasMaxLength(10);
+            });
+
+            entity.HasIndex(e => new { e.UserId, e.AppId, e.ExternalId }).IsUnique();
         });
     }
 }

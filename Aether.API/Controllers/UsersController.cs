@@ -1,5 +1,7 @@
 using Aether.Application.Features.Auth;
 using Aether.Application.Features.Users;
+using Aether.Domain.Entities;
+using Aether.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +15,12 @@ namespace Aether.API.Controllers;
 public class UsersController : ControllerBase
 {
     private readonly UserManager<IdentityUser<Guid>> _userManager;
+    private readonly IUserProfileRepository _userProfileRepo;
 
-    public UsersController(UserManager<IdentityUser<Guid>> userManager)
+    public UsersController(UserManager<IdentityUser<Guid>> userManager, IUserProfileRepository userProfileRepo)
     {
         _userManager = userManager;
+        _userProfileRepo = userProfileRepo;
     }
 
     [HttpPatch("me")]
@@ -47,5 +51,19 @@ public class UsersController : ControllerBase
         }
 
         return Ok(new UserDto { Id = user.Id, Name = user.UserName!, Email = user.Email! });
+    }
+
+    [HttpPatch("me/steam-id")]
+    public async Task<IActionResult> UpdateSteamId([FromBody] UpdateSteamIdRequest request, CancellationToken ct)
+    {
+        if (string.IsNullOrWhiteSpace(request.SteamId))
+            return BadRequest(new { error = "ValidationError", message = "SteamId cannot be empty." });
+
+        var userId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        var profile = await _userProfileRepo.GetByUserIdAsync(userId, ct) ?? new UserProfile(userId);
+        profile.SetSteamId(request.SteamId.Trim());
+        await _userProfileRepo.UpsertAsync(profile, ct);
+
+        return Ok(new { steamId = profile.SteamId });
     }
 }
